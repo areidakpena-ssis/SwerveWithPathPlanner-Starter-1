@@ -22,7 +22,7 @@ Our swerve drive setup consists of the following components:
 * **Steer (Azimuth) Motors:** CTRE Talon FX (Integrated Brushless).
 * **Azimuth Absolute Encoders:** CTRE CANcoder.
 * **Gyroscope / IMU:** CTRE Pigeon 2.0.
-* **CAN Network:** Connected via CTRE CANivore bus (`canivore`).
+* **CAN Network:** Connected via the roboRIO CAN bus (`rio`).
 
 ---
 
@@ -46,21 +46,21 @@ src/main/java/frc/robot/
 ### 1. `TunerConstants.java`
 **Purpose:** Generated initially via CTRE Phoenix Tuner X, this file centralizes all hardware identifiers, mechanical dimensions, sensor offsets, and motor controller PID/Feedforward gains.
 
-#### CAN Bus Device Assignments (`canivore` bus)
+#### CAN Bus Device Assignments (`rio` bus)
 * **IMU / Gyroscope:** Pigeon 2.0 (ID: `20`)
 
 | Module | Drive Motor ID | Steer Motor ID | Encoder (CANcoder) ID | Position (X, Y) |
 | :--- | :---: | :---: | :---: | :---: |
-| **Front Left** | `21` | `22` | `23` | (+10 in, +10 in) |
-| **Front Right** | `24` | `25` | `26` | (+10 in, -10 in) |
-| **Back Left** | `27` | `28` | `29` | (-10 in, +10 in) |
-| **Back Right** | `30` | `31` | `32` | (-10 in, -10 in) |
+| **Front Left** | `21` | `22` | `23` | (+10.75 in, +10.75 in) |
+| **Front Right** | `24` | `25` | `26` | (+10.75 in, -10.75 in) |
+| **Back Left** | `27` | `28` | `29` | (-10.75 in, +10.75 in) |
+| **Back Right** | `30` | `31` | `32` | (-10.75 in, -10.75 in) |
 
 #### Physical Robot Parameters
-* **Drive Gear Ratio:** `6.75 : 1` (SDS MK4i L2 Gearing)
+* **Drive Gear Ratio:** `6.746 : 1` (SDS MK4i L2 Gearing)
 * **Steer Gear Ratio:** `150 / 7 : 1` (~`21.43 : 1`)
 * **Wheel Radius:** `2.0 inches` (4-inch diameter Colson wheels)
-* **Track Width & Wheel Base:** `20.0 inches` × `20.0 inches` (10-inch offset from robot center per axis)
+* **Track Width & Wheel Base:** `21.5 inches` × `21.5 inches` (10.75-inch offset from robot center per axis)
 
 ---
 
@@ -126,13 +126,13 @@ public Command applyRequest(Supplier<SwerveRequest> requestSupplier)
 
 ### 2. Verify Physical Parameters of the Robot
 - [ ] Measure physical wheel radius and update `kWheelRadius` in `TunerConstants.java` if tread wear deviates from the 2.0-inch nominal radius.
-- [ ] Measure module offsets from frame center to ensure `kFrontLeftXPos`, `kFrontLeftYPos`, etc., accurately reflect physical dimensions (+/- 10 inches).
-- [ ] Confirm drive motor gear ratio corresponds to SDS MK4i L2 gearing (6.75 : 1).
+- [ ] Measure module offsets from frame center to ensure `kFrontLeftXPos`, `kFrontLeftYPos`, etc., accurately reflect physical dimensions (+/- 10.75 inches).
+- [ ] Confirm drive motor gear ratio corresponds to SDS MK4i L2 gearing (6.746 : 1).
 - [ ] Confirm steer motor gear ratio corresponds to 150 / 7 : 1 (~21.43 : 1).
 
 ### 3. Verify Steering Motor Gains (`steerGains`)
 - [ ] Elevate the robot chassis securely on blocks so all wheels can rotate freely without ground contact.
-- [ ] Review baseline closed-loop steer gains in `TunerConstants.java` (kP = 100, kI = 0, kD = 0.5, kS = 0.1, kV = 1.91).
+- [ ] Review baseline closed-loop steer gains in `TunerConstants.java` (kP = 90, kI = 0, kD = 0.2, kS = 0.1, kV = 1.50).
 - [ ] Enable the robot in Teleop mode and observe module responsiveness:
   - Check for high-frequency oscillation or jitter (indicates kP is too high or needs additional kD damping).
   - Check for sluggish response or static offset (indicates kP or kS feedforward is too low).
